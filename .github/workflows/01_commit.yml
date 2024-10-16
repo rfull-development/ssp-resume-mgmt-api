@@ -1,0 +1,43 @@
+# Copyright (c) 2024 RFull Development
+# This source code is managed under the MIT license. See LICENSE in the project root.
+name: Commit Checks
+env:
+  DOTNET_VERSION: 8.0.x
+  PROJECT_FILE: ResumeManagementApi.csproj
+  SOLUTION_FILE: ResumeManagementApi.sln
+on:
+  push:
+    branches:
+      - "**"
+      - "!main"
+    paths:
+      - ".github/workflows/01_commit.yml"
+      - "Adapters/**"
+      - "Database/**"
+      - "Extensions/**"
+      - "Handlers/**"
+      - "Models/**"
+      - ".dockerignore"
+      - "appsettings.json"
+      - "Dockerfile"
+      - "Program.cs"
+      - "*.csproj"
+      - "*.sln"
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  build-check:
+    if: github.actor != 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+      - name: Restore dependencies
+        run: dotnet restore
+      - name: Build Check
+        run: dotnet build ${{ env.SOLUTION_FILE }} --no-restore

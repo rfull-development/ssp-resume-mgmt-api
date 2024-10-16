@@ -1,0 +1,11 @@
+﻿name: Resume Management OpenAPI registry
+description: This repository contains the OpenAPI definitions for Resume Management APIs.
+tags:
+- ryotafunaki
+apis:
+- name: Resume Management API v1.0
+  description: The Resume Management API provides endpoints for managing resumes.
+  baseUrl: https://api.example.com/resumes/v1.0
+  properties:
+  - type: x-openapi
+    url: schemas/apis/v1.0/openapi.yaml

@@ -1,0 +1,21 @@
+.git/
+.github/
+.vscode/
+charts/
+hooks/
+.dockerignore
+.editorconfig
+.gitattributes
+.gitignore
+docker-compose.yml
+Dockerfile
+README.md
+
+# .NET generated files
+bin/
+obj/
+Properties/
+Tests/
+schemas/
+.vs/
+*.user

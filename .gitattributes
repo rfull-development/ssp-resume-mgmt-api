@@ -1,0 +1,10 @@
+# See https://docs.github.com/ja/get-started/getting-started-with-git/configuring-git-to-handle-line-endings
+* text=auto
+
+# Database files
+*.sql text
+
+# C#.NET specific files
+*.cs text
+*.proj text
+*.sln text

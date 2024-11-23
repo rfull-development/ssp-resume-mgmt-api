@@ -1,0 +1,33 @@
+// Copyright (c) 2024 RFull Development
+// This source code is managed under the MIT license. See LICENSE in the project root.
+{
+  "name": ".NET Dev Container",
+  "dockerComposeFile": "./docker-compose.yml",
+  "service": "develop",
+  "workspaceFolder": "/workspace",
+  "postCreateCommand": "cd .devcontainer/shells/post_create/ && bash -C install.sh",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-vscode-remote.remote-containers",
+        "ms-azuretools.vscode-docker",
+        "GitHub.copilot",
+        "GitHub.copilot-chat",
+        "github.vscode-github-actions",
+        "GitHub.codespaces",
+        "GitHub.vscode-pull-request-github",
+        "GitHub.remotehub",
+        "GitHub.github-vscode-theme",
+        "EditorConfig.EditorConfig",
+        "eamodio.gitlens",
+        "ms-dotnettools.csharp",
+        "ms-dotnettools.csdevkit",
+        "ms-dotnettools.vscodeintellicode-csharp",
+        "ms-dotnettools.dotnet-interactive-vscode",
+        "ms-toolsai.jupyter-renderers",
+        "redhat.vscode-xml",
+        "redhat.vscode-yaml"
+      ]
+    }
+  }
+}

@@ -1,0 +1,10 @@
+﻿bin/
+obj/
+TestResults/
+Properties/**/*
+!Properties/launchSettings.json
+.vs/
+.vscode/
+*.user
+*.http
+*.log

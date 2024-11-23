@@ -1,0 +1,108 @@
+openapi: 3.0.3
+info:
+  title: API Specification
+  version: 1.0.0
+  license:
+    name: MIT
+    url: https://opensource.org/license/mit/
+servers:
+  - url: http://localhost:5000
+    description: Development Server
+tags:
+  - name: item
+components:
+  schemas:
+    Data:
+      type: object
+      properties:
+        name:
+          type: string
+    DataGetResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Data'
+    DataPostRequest:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Data'
+    DataPostResponse:
+      type: object
+      properties:
+        id:
+          type: string
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      in: header
+      name: API-ACCESS-KEY
+    basicAuth:
+      type: http
+      scheme: basic
+paths:
+  /{name}:
+    parameters:
+      - in: path
+        required: true
+        name: name
+        description: description
+        schema:
+          type: string
+    get:
+      tags:
+        - item
+      summary: summary of get
+      description: description
+      operationId: getData
+      security:
+        - apiKey: []
+        - basicAuth: []
+      parameters:
+        - name: query
+          in: query
+          description: description
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataGetResponse'
+    post:
+      tags:
+        - item
+      summary: summary of post
+      description: description
+      operationId: postData
+      security:
+        - apiKey: []
+        - basicAuth: []
+      parameters:
+        - name: query
+          in: query
+          description: description
+          required: false
+          schema:
+            type: string
+      requestBody:
+        description: description
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DataPostRequest'
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataPostResponse'

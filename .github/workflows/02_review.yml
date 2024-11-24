@@ -1,0 +1,46 @@
+# Copyright (c) 2024 RFull Development
+# This source code is managed under the MIT license. See LICENSE in the project root.
+name: Review Checks
+env:
+  DOTNET_VERSION: 8.0.x
+  PROJECT_FILE: ResumeManagementApi.csproj
+  SOLUTION_FILE: ResumeManagementApi.sln
+on:
+  workflow_dispatch:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  static-analysis:
+    if: ${{ github.event.pull_request.draft == false }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+      - name: Restore dependencies
+        run: dotnet restore
+      - name: Static analysis
+        run: dotnet build ${{ env.SOLUTION_FILE }} --no-restore -warnaserror
+  unit-test:
+    needs: static-analysis
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+      - name: Restore dependencies
+        run: dotnet restore
+      - name: Run unit tests
+        run: dotnet test ${{ env.SOLUTION_FILE }} --no-restore --filter TestCategory=Unit

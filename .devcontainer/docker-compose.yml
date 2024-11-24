@@ -1,7 +1,22 @@
 # Copyright (c) 2024 RFull Development
 # This source code is managed under the MIT license. See LICENSE in the project root.
 services:
+  postgres:
+    image: postgres:latest
+    hostname: postgres
+    restart: unless-stopped
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_PASSWORD=postgres
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
   develop:
+    depends_on:
+      - postgres
     build:
       context: .
       dockerfile: ./Dockerfile

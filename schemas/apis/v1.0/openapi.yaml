@@ -1,108 +1,854 @@
-openapi: 3.0.3
+﻿openapi: 3.0.3
 info:
-  title: API Specification
+  title: Resume Management API Specification
   version: 1.0.0
   license:
     name: MIT
     url: https://opensource.org/license/mit/
 servers:
-  - url: http://localhost:5000
+  - url: http://localhost:5244
     description: Development Server
 tags:
-  - name: item
+  - name: Resume
+    description: Resume
 components:
   schemas:
-    Data:
+    Resume:
       type: object
+      required:
+        - id
       properties:
-        name:
+        id:
           type: string
-    DataGetResponse:
+        skills:
+          $ref: '#/components/schemas/Skill'
+    ResumeListGetResponse:
       type: object
+      required:
+        - totalCount
+        - count
+        - resumes
       properties:
-        data:
+        totalCount:
+          type: integer
+          format: int64
+        count:
+          type: integer
+        resumes:
           type: array
           items:
-            $ref: '#/components/schemas/Data'
-    DataPostRequest:
+            $ref: '#/components/schemas/Resume'
+    ResumeGetResponse:
+      allOf:
+        - $ref: '#/components/schemas/Resume'
+    ResumeCreateRequest:
       type: object
+      required:
+        - userId
       properties:
-        data:
+        userId:
+          type: string
+    Skill:
+      type: object
+      required:
+        - id
+        - skillId
+      properties:
+        id:
+          type: string
+        skillId:
+          type: string
+        usages:
           type: array
           items:
-            $ref: '#/components/schemas/Data'
-    DataPostResponse:
+            $ref: '#/components/schemas/SkillUsage'
+        learnings:
+          type: array
+          items:
+            $ref: '#/components/schemas/SkillLearning'
+    SkillUsage:
+      allOf:
+        - $ref: '#/components/schemas/Usage'
+    SkillUsageUpdate:
       type: object
       properties:
         id:
           type: string
-  securitySchemes:
-    apiKey:
-      type: apiKey
-      in: header
-      name: API-ACCESS-KEY
-    basicAuth:
-      type: http
-      scheme: basic
-paths:
-  /{name}:
-    parameters:
-      - in: path
-        required: true
-        name: name
-        description: description
-        schema:
+        description:
           type: string
+    SkillLearning:
+      allOf:
+        - $ref: '#/components/schemas/Learning'
+    SkillLearningUpdate:
+      type: object
+      properties:
+        id:
+          type: string
+        description:
+          type: string
+    SkillListGetResponse:
+      type: object
+      required:
+        - count
+        - skills
+      properties:
+        count:
+          type: integer
+        skills:
+          type: array
+          items:
+            $ref: '#/components/schemas/Skill'
+    SkillCreateRequest:
+      type: object
+      required:
+        - skillId
+      properties:
+        skillId:
+          type: string
+    SkillCreateResponse:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          type: string
+    SkillGetResponse:
+      allOf:
+        - $ref: '#/components/schemas/Skill'
+    SkillUpdateRequest:
+      type: object
+      required:
+        - skillId
+      properties:
+        skillId:
+          type: string
+    SkillUsageListGetResponse:
+      type: object
+      required:
+        - count
+        - usages
+      properties:
+        count:
+          type: integer
+        usages:
+          type: array
+          items:
+            $ref: '#/components/schemas/SkillUsage'
+    SkillUsageListUpdateRequest:
+      type: object
+      required:
+        - usages
+      properties:
+        usages:
+          type: array
+          items:
+            $ref: '#/components/schemas/SkillUsageUpdate'
+    SkillLearningListGetResponse:
+      type: object
+      required:
+        - count
+        - learnings
+      properties:
+        count:
+          type: integer
+        learnings:
+          type: array
+          items:
+            $ref: '#/components/schemas/SkillLearning'
+    SkillLearningListUpdateRequest:
+      type: object
+      required:
+        - learnings
+      properties:
+        learnings:
+          type: array
+          items:
+            $ref: '#/components/schemas/SkillLearningUpdate'
+    Usage:
+      type: object
+      required:
+        - id
+        - summary
+      properties:
+        id:
+          type: string
+        summary:
+          type: string
+        description:
+          type: string
+    UsageListGetResponse:
+      type: object
+      required:
+        - totalCount
+        - count
+        - usages
+      properties:
+        totalCount:
+          type: integer
+          format: int64
+        count:
+          type: integer
+        usages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Usage'
+    UsageGetResponse:
+      allOf:
+        - $ref: '#/components/schemas/Usage'
+    UsageCreateRequest:
+      type: object
+      required:
+        - summary
+      properties:
+        summary:
+          type: string
+    UsageCreateResponse:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          type: string
+    UsageUpdateRequest:
+      type: object
+      properties:
+        summary:
+          type: string
+        description:
+          type: string
+    Learning:
+      type: object
+      required:
+        - id
+        - summary
+      properties:
+        id:
+          type: string
+        summary:
+          type: string
+        description:
+          type: string
+    LearningListGetResponse:
+      type: object
+      required:
+        - totalCount
+        - count
+        - learnings
+      properties:
+        totalCount:
+          type: integer
+          format: int64
+        count:
+          type: integer
+        learnings:
+          type: array
+          items:
+            $ref: '#/components/schemas/Learning'
+    LearningGetResponse:
+      allOf:
+        - $ref: '#/components/schemas/Learning'
+    LearningCreateRequest:
+      type: object
+      required:
+        - summary
+      properties:
+        summary:
+          type: string
+    LearningCreateResponse:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          type: string
+    LearningUpdateRequest:
+      type: object
+      properties:
+        summary:
+          type: string
+        description:
+          type: string
+paths:
+  /resumes:
     get:
       tags:
-        - item
-      summary: summary of get
-      description: description
-      operationId: getData
-      security:
-        - apiKey: []
-        - basicAuth: []
-      parameters:
-        - name: query
-          in: query
-          description: description
-          required: false
-          schema:
-            type: string
+        - Resume
+      summary: Retrieves a list of resume.
+      operationId: getResumeList
       responses:
         '200':
-          description: success
+          description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/DataGetResponse'
+                $ref: '#/components/schemas/ResumeListGetResponse'
+              example:
+                totalCount: 1
+                count: 1
+                resumes:
+                  - id: ID String
+        '503':
+          description: Service Unavailable
     post:
       tags:
-        - item
-      summary: summary of post
-      description: description
-      operationId: postData
-      security:
-        - apiKey: []
-        - basicAuth: []
-      parameters:
-        - name: query
-          in: query
-          description: description
-          required: false
-          schema:
-            type: string
+        - Resume
+      summary: Create a new resume.
+      operationId: createResume
       requestBody:
-        description: description
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/DataPostRequest'
+              $ref: '#/components/schemas/ResumeCreateRequest'
+      responses:
+        '201':
+          description: Created
+          headers:
+            Location:
+              schema:
+                type: string
+                format: uri
+        '409':
+          description: Conflict
+        '503':
+          description: Service Unavailable
+  /resumes/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      tags:
+        - Resume
+      summary: Retrieves a resume.
+      operationId: getResume
       responses:
         '200':
-          description: success
+          description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/DataPostResponse'
+                $ref: '#/components/schemas/ResumeGetResponse'
+              example:
+                id: ID String
+                skills:
+                  - id: ID String
+                    skillId: Skill ID String
+        '400':
+          description: Bad Request
+        '404':
+          description: Not Found
+        '503':
+          description: Service Unavailable
+    delete:
+      tags:
+        - Resume
+      summary: Delete a resume.
+      operationId: deleteResume
+      responses:
+        '202':
+          description: Accepted
+        '404':
+          description: Not Found
+        '503':
+          description: Service Unavailable
+  /resumes/{id}/skills:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      tags:
+        - Resume
+      summary: Retrieves a list of skill of a resume.
+      operationId: getResumeSkillList
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SkillListGetResponse'
+              example:
+                count: 1
+                skills:
+                  id: ID String
+                  skillId: Skill ID String
+        '400':
+          description: Bad Request
+        '404':
+          description: Not Found
+        '503':
+          description: Service Unavailable
+    post:
+      tags:
+        - Resume
+      summary: Create a new skill for a resume.
+      operationId: createResumeSkill
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SkillCreateRequest'
+      responses:
+        '201':
+          description: Created
+          headers:
+            Location:
+              schema:
+                type: string
+                format: uri
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SkillCreateResponse'
+              example:
+                id: ID String
+        '400':
+          description: Bad Request
+        '404':
+          description: Not Found
+        '409':
+          description: Conflict
+        '503':
+          description: Service Unavailable
+  /resumes/{id}/skills/{skillId}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: skillId
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      tags:
+        - Resume
+      summary: Retrieves a skill of a resume.
+      operationId: getResumeSkill
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SkillGetResponse'
+              example:
+                id: ID String
+                skillId: Skill ID String
+                usages:
+                  - id: ID String
+                    summary: Summary
+                learnings:
+                  - id: ID String
+                    summary: Summary
+        '400':
+          description: Bad Request
+        '404':
+          description: Not Found
+        '503':
+          description: Service Unavailable
+    patch:
+      tags:
+        - Resume
+      summary: Update the properties of a skill of a resume.
+      operationId: updateResumeSkill
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SkillUpdateRequest'
+      responses:
+        '202':
+          description: Accepted
+        '400':
+          description: Bad Request
+        '404':
+          description: Not Found
+        '409':
+          description: Conflict
+        '503':
+          description: Service Unavailable
+    delete:
+      tags:
+        - Resume
+      summary: Delete a skill of a resume.
+      operationId: deleteResumeSkill
+      responses:
+        '202':
+          description: Accepted
+        '400':
+          description: Bad Request
+        '404':
+          description: Not Found
+        '503':
+          description: Service Unavailable
+  /resumes/{id}/skills/{skillId}/usages:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: skillId
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      tags:
+        - Resume
+      summary: Retrieves a list of usage of a skill.
+      operationId: getResumeSkillUsageList
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SkillUsageListGetResponse'
+              example:
+                count: 1
+                usages:
+                  - id: ID String
+                    summary: Summary
+        '400':
+          description: Bad Request
+        '404':
+          description: Not Found
+        '503':
+          description: Service Unavailable
+    put:
+      tags:
+        - Resume
+      summary: Replace the usages of a skill.
+      operationId: replaceResumeSkillUsage
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SkillUsageListUpdateRequest'
+      responses:
+        '202':
+          description: Accepted
+        '400':
+          description: Bad Request
+        '404':
+          description: Not Found
+        '409':
+          description: Conflict
+        '503':
+          description: Service Unavailable
+    delete:
+      tags:
+        - Resume
+      summary: Delete the usages of a skill.
+      operationId: deleteResumeSkillUsage
+      responses:
+        '202':
+          description: Accepted
+        '400':
+          description: Bad Request
+        '404':
+          description: Not Found
+        '503':
+          description: Service Unavailable
+  /resumes/{id}/skills/{skillId}/learnings:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: skillId
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      tags:
+        - Resume
+      summary: Retrieves a list of learning of a skill.
+      operationId: getResumeSkillLearningList
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SkillLearningListGetResponse'
+              example:
+                count: 1
+                learnings:
+                  - id: ID String
+                    summary: Summary
+        '400':
+          description: Bad Request
+        '404':
+          description: Not Found
+        '503':
+          description: Service Unavailable
+    put:
+      tags:
+        - Resume
+      summary: Replace the learnings of a skill.
+      operationId: replaceResumeSkillLearning
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SkillLearningListUpdateRequest'
+      responses:
+        '202':
+          description: Accepted
+        '400':
+          description: Bad Request
+        '404':
+          description: Not Found
+        '409':
+          description: Conflict
+        '503':
+          description: Service Unavailable
+    delete:
+      tags:
+        - Resume
+      summary: Delete the learnings of a skill.
+      operationId: deleteResumeSkillLearning
+      responses:
+        '202':
+          description: Accepted
+        '400':
+          description: Bad Request
+        '404':
+          description: Not Found
+        '503':
+          description: Service Unavailable
+  /usages:
+    get:
+      tags:
+        - Usage
+      summary: Retrieves a list of usage.
+      operationId: getUsageList
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsageListGetResponse'
+              example:
+                totalCount: 1
+                count: 1
+                usages:
+                  - id: ID String
+                    summary: Summary
+        '503':
+          description: Service Unavailable
+    post:
+      tags:
+        - Usage
+      summary: Create a new usage.
+      operationId: createUsage
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UsageCreateRequest'
+      responses:
+        '201':
+          description: Created
+          headers:
+            Location:
+              schema:
+                type: string
+                format: uri
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsageCreateResponse'
+        '503':
+          description: Service Unavailable
+  /usages/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      tags:
+        - Usage
+      summary: Retrieves a usage.
+      operationId: getUsage
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsageGetResponse'
+              example:
+                id: ID String
+                summary: Summary
+                description: Description
+        '400':
+          description: Bad Request
+        '404':
+          description: Not Found
+        '503':
+          description: Service Unavailable
+    patch:
+      tags:
+        - Usage
+      summary: Update the properties of a usage.
+      operationId: updateUsage
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UsageUpdateRequest'
+      responses:
+        '202':
+          description: Accepted
+        '400':
+          description: Bad Request
+        '404':
+          description: Not Found
+        '409':
+          description: Conflict
+        '503':
+          description: Service Unavailable
+    delete:
+      tags:
+        - Usage
+      summary: Delete a usage.
+      operationId: deleteUsage
+      responses:
+        '202':
+          description: Accepted
+        '404':
+          description: Not Found
+        '503':
+          description: Service Unavailable
+  /learnings:
+    get:
+      tags:
+        - Learning
+      summary: Retrieves a list of learning.
+      operationId: getLearningList
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LearningListGetResponse'
+              example:
+                totalCount: 1
+                count: 1
+                learnings:
+                  - id: ID String
+                    summary: Summary
+        '503':
+          description: Service Unavailable
+    post:
+      tags:
+        - Learning
+      summary: Create a new learning.
+      operationId: createLearning
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LearningCreateRequest'
+      responses:
+        '201':
+          description: Created
+          headers:
+            Location:
+              schema:
+                type: string
+                format: uri
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LearningCreateResponse'
+        '503':
+          description: Service Unavailable
+  /learnings/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      tags:
+        - Learning
+      summary: Retrieves a learning.
+      operationId: getLearning
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LearningGetResponse'
+              example:
+                id: ID String
+                summary: Summary
+                description: Description
+        '400':
+          description: Bad Request
+        '404':
+          description: Not Found
+        '503':
+          description: Service Unavailable
+    patch:
+      tags:
+        - Learning
+      summary: Update the properties of a learning.
+      operationId: updateLearning
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LearningUpdateRequest'
+      responses:
+        '202':
+          description: Accepted
+        '400':
+          description: Bad Request
+        '404':
+          description: Not Found
+        '409':
+          description: Conflict
+        '503':
+          description: Service Unavailable
+    delete:
+      tags:
+        - Learning
+      summary: Delete a learning.
+      operationId: deleteLearning
+      responses:
+        '202':
+          description: Accepted
+        '404':
+          description: Not Found
+        '503':
+          description: Service Unavailable
